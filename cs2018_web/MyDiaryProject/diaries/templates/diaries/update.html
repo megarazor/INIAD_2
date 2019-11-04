@@ -1,0 +1,27 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Creating new diary</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <h1>Create diary</h1>
+    <form action="{% url 'update' diary.id %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Enter the title"/>
+        <br />
+        <input type="text" name="detail" placeholder="Enter the detail"/>
+        <br />
+        <input type="date" name="created" placeholder="Enter the date"/>
+        <input type="submit" value="Submit"/>
+    </form>
+<a href="">Edit</a>
+<br />
+<a href="{% url 'detail' diary.id %}">Index</a>
+</body>
+
+</html>

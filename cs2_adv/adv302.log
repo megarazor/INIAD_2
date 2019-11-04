@@ -1,0 +1,10 @@
+--begin--
+2019-01-09 22:42:59,928 /home/iniad/miniconda3/envs/cs2_adv/lib/libmkl_rt.so
+2019-01-09 22:42:59,941 Opt BLAS found
+2019-01-09 22:43:00,856 137.3 MB
+2019-01-09 22:43:00,979 Number of threads: 2
+2019-01-09 22:43:00,979 6000*6000 matmul
+2019-01-09 22:43:07,025 1 threads 6.046 sec
+2019-01-09 22:43:10,453 2 threads 3.428 sec 1.76x speedup
+1bbe3e8d67bde0c96e87798c726fb2517212a01332fce79ce60d9d7613a97dde
+--end--

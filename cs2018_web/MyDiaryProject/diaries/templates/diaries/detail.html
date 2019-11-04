@@ -1,0 +1,27 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Diary details</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <h1>Diary details</h1>
+    <p>
+        {{diary.title}}
+    </p>
+    <p>
+        {{diary.detail}}
+    </p>
+    <p>
+        {{diary.created}}
+    </p>
+    <a href="{% url 'update' diary.id %}">Update</a>
+    <br />
+    <a href="{% url 'index' %}">Top page</a>
+</body>
+
+</html>

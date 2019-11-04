@@ -1,0 +1,26 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>List of diaries</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <h1>List of diaries</h1>
+    <table>
+        {% for diary in diaries %}
+        <tr>
+            <td><a href="{% url 'detail' diary.id %}" class="title">{{ diary.title }}</a></td>
+            <td><a href="{% url 'update' diary.id %}" class="update">Update</a></td>
+            <td><a href="" class="delete">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <a href="{% url 'create' %}" class="update">Write new diary</a>
+</body>
+
+</html>

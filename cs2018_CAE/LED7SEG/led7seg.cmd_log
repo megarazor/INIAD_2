@@ -1,0 +1,14 @@
+xst -intstyle ise -ifn "/home/ise/cs2018_CAE/LED7SEG/led7seg.xst" -ofn "/home/ise/cs2018_CAE/LED7SEG/led7seg.syr" 
+xst -intstyle ise -ifn "/home/ise/cs2018_CAE/LED7SEG/led7seg.xst" -ofn "/home/ise/cs2018_CAE/LED7SEG/led7seg.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc led7seg.ucf -p xc6slx4-tqg144-3 led7seg.ngc led7seg.ngd  
+map -intstyle ise -p xc6slx4-tqg144-3 -w -logic_opt off -ol high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off -pr off -lc off -power off -o led7seg_map.ncd led7seg.ngd led7seg.pcf 
+par -w -intstyle ise -ol high -mt off led7seg_map.ncd led7seg.ncd led7seg.pcf 
+trce -intstyle ise -v 3 -s 3 -n 3 -fastpaths -xml led7seg.twx led7seg.ncd -o led7seg.twr led7seg.pcf -ucf led7seg.ucf 
+bitgen -intstyle ise -f led7seg.ut led7seg.ncd 
+bitgen -intstyle ise -f led7seg.ut led7seg.ncd 
+xst -intstyle ise -ifn "/home/ise/cs2018_CAE/LED7SEG/led7seg.xst" -ofn "/home/ise/cs2018_CAE/LED7SEG/led7seg.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc led7seg.ucf -p xc6slx4-tqg144-3 led7seg.ngc led7seg.ngd  
+map -intstyle ise -p xc6slx4-tqg144-3 -w -logic_opt off -ol high -t 1 -xt 0 -register_duplication off -r 4 -global_opt off -mt off -ir off -pr off -lc off -power off -o led7seg_map.ncd led7seg.ngd led7seg.pcf 
+par -w -intstyle ise -ol high -mt off led7seg_map.ncd led7seg.ncd led7seg.pcf 
+trce -intstyle ise -v 3 -s 3 -n 3 -fastpaths -xml led7seg.twx led7seg.ncd -o led7seg.twr led7seg.pcf -ucf led7seg.ucf 
+bitgen -intstyle ise -f led7seg.ut led7seg.ncd 

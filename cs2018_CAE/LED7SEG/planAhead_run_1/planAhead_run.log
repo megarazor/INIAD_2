@@ -1,0 +1,106 @@
+
+****** PlanAhead v14.7 (64-bit)
+  **** Build 321239 by xbuild on Fri Sep 27 19:24:36 MDT 2013
+    ** Copyright 1986-1999, 2001-2013 Xilinx, Inc. All Rights Reserved.
+
+INFO: [Common 17-78] Attempting to get a license: PlanAhead
+INFO: [Common 17-290] Got license for PlanAhead
+INFO: [Common 17-86] Your PlanAhead license expires in -802 day(s)
+INFO: [Device 21-36] Loading parts and site information from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/arch.xml
+Parsing RTL primitives file [/opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/rtl/prims/rtl_prims.xml]
+Finished parsing RTL primitives file [/opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/rtl/prims/rtl_prims.xml]
+start_gui
+source /home/ise/cs2018_CAE/LED7SEG/pa.fromNetlist.tcl
+# create_project -name LED7SEG -dir "/home/ise/cs2018_CAE/LED7SEG/planAhead_run_1" -part xc6slx4tqg144-3
+# set_property design_mode GateLvl [get_property srcset [current_run -impl]]
+# set_property edif_top_file "/home/ise/cs2018_CAE/LED7SEG/led7seg.ngc" [ get_property srcset [ current_run ] ]
+# add_files -norecurse { {/home/ise/cs2018_CAE/LED7SEG} }
+# set_param project.pinAheadLayout  yes
+# set_property target_constrs_file "led7seg.ucf" [current_fileset -constrset]
+Adding file '/home/ise/cs2018_CAE/LED7SEG/led7seg.ucf' to fileset 'constrs_1'
+# add_files [list {led7seg.ucf}] -fileset [get_property constrset [current_run]]
+# link_design
+Design is defaulting to srcset: sources_1
+Design is defaulting to constrset: constrs_1
+Design is defaulting to project part: xc6slx4tqg144-3
+Release 14.7 - ngc2edif P.20160913 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+Release 14.7 - ngc2edif P.20160913 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+Reading design led7seg.ngc ...
+WARNING:NetListWriters:298 - No output is written to led7seg.xncf, ignored.
+Processing design ...
+   Preping design's networks ...
+   Preping design's macros ...
+  finished :Prep
+Writing EDIF netlist file led7seg.edif ...
+ngc2edif: Total memory usage is 103900 kilobytes
+
+Parsing EDIF File [./planAhead_run_1/LED7SEG.data/cache/led7seg_ngc_7443ad09.edif]
+Finished Parsing EDIF File [./planAhead_run_1/LED7SEG.data/cache/led7seg_ngc_7443ad09.edif]
+Loading clock regions from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/spartan6/spartan6lx/xc6slx4/ClockRegion.xml
+Loading clock buffers from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/spartan6/spartan6lx/xc6slx4/ClockBuffers.xml
+Loading package pin functions from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/spartan6/PinFunctions.xml...
+Loading package from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/spartan6/spartan6lx/xc6slx4/tqg144/Package.xml
+Loading io standards from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/./parts/xilinx/spartan6/IOStandards.xml
+Loading device configuration modes from /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/parts/xilinx/spartan6/ConfigModes.xml
+Loading list of drcs for the architecture : /opt/Xilinx/14.7/ISE_DS/PlanAhead/data/./parts/xilinx/spartan6/drc.xml
+Parsing UCF File [/home/ise/cs2018_CAE/LED7SEG/led7seg.ucf]
+Finished Parsing UCF File [/home/ise/cs2018_CAE/LED7SEG/led7seg.ucf]
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Phase 0 | Netlist Checksum: c6f9f962
+link_design: Time (s): cpu = 00:00:17 ; elapsed = 00:00:21 . Memory (MB): peak = 2783.750 ; gain = 139.125
+startgroup
+set_property package_pin P8 [get_ports {LED[7]}]
+endgroup
+startgroup
+set_property package_pin P6 [get_ports {LED[6]}]
+endgroup
+startgroup
+set_property package_pin P7 [get_ports {LED[5]}]
+endgroup
+startgroup
+set_property package_pin P5 [get_ports {LED[4]}]
+endgroup
+startgroup
+set_property package_pin P9 [get_ports {LED[3]}]
+endgroup
+startgroup
+set_property package_pin P11 [get_ports {LED[2]}]
+endgroup
+startgroup
+set_property package_pin P12 [get_ports {LED[1]}]
+endgroup
+startgroup
+set_property package_pin P10 [get_ports {LED[0]}]
+endgroup
+startgroup
+set_property package_pin P14 [get_ports {SA[3]}]
+endgroup
+startgroup
+set_property package_pin P15 [get_ports {SA[2]}]
+endgroup
+startgroup
+set_property package_pin P16 [get_ports {SA[1]}]
+endgroup
+startgroup
+set_property package_pin P17 [get_ports {SA[0]}]
+endgroup
+startgroup
+set_property package_pin P1 [get_ports I1]
+endgroup
+set_property package_pin "" [get_ports [list  I2]]
+startgroup
+set_property package_pin P1 [get_ports I1]
+endgroup
+startgroup
+set_property package_pin P2 [get_ports I2]
+endgroup
+save_constraints
+exit
+ERROR: [Common 17-39] 'stop_gui' failed due to earlier errors.
+INFO: [Common 17-206] Exiting PlanAhead at Thu Jul 11 06:47:41 2019...
+INFO: [Common 17-83] Releasing license: PlanAhead

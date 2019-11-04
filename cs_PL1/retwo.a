@@ -1,0 +1,5 @@
+!<arch>
+retwo.c/        0           0     0     644     32        `
+int retwo(){
+    return 2;
+}

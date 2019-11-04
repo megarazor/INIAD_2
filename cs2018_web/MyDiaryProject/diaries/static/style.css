@@ -1,0 +1,16 @@
+h1 {
+    text-align: center;
+    color: red;
+  }
+
+.title {
+	color: black;
+}
+  
+.update {
+	color: blue;
+}
+
+.delete {
+	color: red;
+}
