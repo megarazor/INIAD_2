@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 #define BUF_SIZE 1024
 #define ARG_SIZE 64
@@ -37,7 +38,7 @@ int main(int argc, char* argv[]){
         cmd[i - 1]= NULL;
 
         // Handling parallel processes
-        int pid= fork();
+        pid_t pid= fork();
         if (pid < 0){
             fprintf(stderr, "ERROR: fork() failed.\n");
             return -1;
@@ -51,9 +52,9 @@ int main(int argc, char* argv[]){
             // Child
             int n= execvp(cmd[0], cmd);
             if (n != 0){
-                printf("execvp(3) returns %d.\nERROR: Can't run the command.\n", n);
+                printf("execvp(3) returns %d.\nERROR: Can't run the command.\n", n);        
+                return -1;
             }
-            return -1;
         }
     }
     return 0;
