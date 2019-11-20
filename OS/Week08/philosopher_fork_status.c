@@ -14,7 +14,7 @@ static const char* names[] = {
 int fork_status[PHILOSOPHERS]= {0, 0, 0, 0, 0}; // 0: available, 1: taken
 pthread_t philosophers[PHILOSOPHERS];
 pthread_mutex_t fork_mutex;
-pthread_cond_t cond;
+pthread_cond_t cond; // Condition that at least 2 forks are available (which means the statement "at least 4 forks are taken" is wrong)
 
 static void eat(int phil, int fork1, int fork2)
 {
@@ -61,11 +61,12 @@ void* philosopher_thread(void* arg)
 
                 eat(phil, left, right);
 
-                fork_status[left]= 0;
-                printf("%s returned fork on the left\n", names[phil]);
                 fork_status[right]= 0;
                 printf("%s returned fork on the right\n", names[phil]);
             }
+            fork_status[left]= 0;
+            printf("%s returned fork on the left\n", names[phil]);
+            pthread_cond_broadcast(&cond);
         }        
         pthread_mutex_unlock(&fork_mutex);
     }
