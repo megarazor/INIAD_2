@@ -14,11 +14,20 @@ static const char* names[] = {
 int fork_status[PHILOSOPHERS]= {0, 0, 0, 0, 0}; // 0: available, 1: taken
 pthread_t philosophers[PHILOSOPHERS];
 pthread_mutex_t fork_mutex;
-pthread_cond_t four_forks_or_more_are_up;
+pthread_cond_t cond;
 
 static void eat(int phil, int fork1, int fork2)
 {
     printf("%s: \"Yummy!\"\n", names[phil]);
+}
+
+int number_of_taken_forks(int *fork_status){
+    int taken= 0;
+    for (int i= 0; i < 5; i++){
+        if (fork_status[i])
+            taken++;
+    }
+    return taken;
 }
 
 void* philosopher_thread(void* arg)
@@ -28,7 +37,6 @@ void* philosopher_thread(void* arg)
     int left = phil;
     int right = (phil+1) % PHILOSOPHERS;
     int i;
-    int try;
 
     usleep(rand_r(&r) % 1000);
 
@@ -36,27 +44,31 @@ void* philosopher_thread(void* arg)
         /* Think for a while */
         printf("Day: %d\n", i);
         usleep(rand_r(&r) % 100);
+
+        // Condition handling
+        while(number_of_taken_forks(fork_status) >= 4){
+            pthread_cond_wait(&cond, &fork_mutex);
+        }
         
         /* Staring to eat */
-        pthread_mutex_lock(&fork_mutex[left]);
-        printf("%s picked up fork on the left\n", names[phil]);
-        try= pthread_mutex_trylock(&fork_mutex[right]);
-        if (try != 0){
-            printf("%s can't pick up the fork on the right. He returned the left one\n", names[phil]);
-            pthread_mutex_unlock(&fork_mutex[left]);            
-            continue;
-        }
-        printf("%s picked up fork on the right\n", names[phil]);
+        pthread_mutex_lock(&fork_mutex);
+        if (fork_status[left] == 0){
+            fork_status[left]= 1;
+            printf("%s picked up fork on the left\n", names[phil]);
+            if (fork_status[right] == 0){
+                fork_status[left]= 1;
+                printf("%s picked up fork on the right\n", names[phil]);
 
-        eat(phil, left, right);
+                eat(phil, left, right);
 
-        
-        printf("%s returned fork on the right\n", names[phil]);
-        pthread_mutex_unlock(&fork_mutex[right]);
-        printf("%s returned fork on the left\n", names[phil]);
-        pthread_mutex_unlock(&fork_mutex[left]);
+                fork_status[left]= 0;
+                printf("%s returned fork on the left\n", names[phil]);
+                fork_status[right]= 0;
+                printf("%s returned fork on the right\n", names[phil]);
+            }
+        }        
+        pthread_mutex_unlock(&fork_mutex);
     }
-
     return NULL;
 }
 
@@ -67,14 +79,18 @@ int main()
     void* ret;
 
     for (i = 0; i < PHILOSOPHERS; i++) {
-        er = pthread_mutex_init(&fork_mutex[i], NULL);
+        er = pthread_mutex_init(&fork_mutex, NULL);
         if (er != 0) goto error;
     }
+
+    er = pthread_cond_init(&cond, NULL);
+    if (er != 0) goto error;
+
     for (i = 0; i < PHILOSOPHERS; i++) {
         er = pthread_create(&philosophers[i], NULL, philosopher_thread, (void*)(intptr_t)i);
         if (er != 0) goto error;
     }
-    printf("Finished but not joined.\n");
+
     for (i = 0; i < PHILOSOPHERS; i++) {
         pthread_join(philosophers[i], &ret);
     }
