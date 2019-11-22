@@ -87,6 +87,14 @@ void expression_print_infix(Node* tree) {
 }
 
 void expression_print_postfix(Node* tree) {
+    if(tree->left != NULL) {
+        expression_print_prefix(tree->left);
+    }
+
+    if(tree->right != NULL) {
+        expression_print_prefix(tree->right);
+    }
+    print_node(tree);
 }
 
 Node* expression_parse_prefix(char *str) {
@@ -115,6 +123,18 @@ Node* expression_parse_prefix(char *str) {
         int value = strtol(token, &end, 10);
         return expression_construct_number(value);
     }
+}
+
+#define TOKEN_SIZE 1024
+
+Node* expression_parse_infix(char *str) {
+    char *tokens[TOKEN_SIZE];
+    char *token= strtok(str, " \n");
+    int i= 0;
+    while(token != NULL){
+        tokens[i]= token;
+    }
+
 }
 
 Node* expression_parse_postfix(char *str) {
@@ -192,5 +212,16 @@ void expression_print(Node* tree) {
 }
 
 int expression_eval(Node* tree) {
-    return 0;
+    switch(tree->type) {
+        case OPERATOR_ADD:
+            return expression_eval(tree->left) + expression_eval(tree->right);
+        case OPERATOR_SUB:
+            return expression_eval(tree->left) - expression_eval(tree->right);
+        case OPERATOR_MUL:
+            return expression_eval(tree->left) * expression_eval(tree->right);
+        case OPERATOR_DIV:
+            return expression_eval(tree->left) / expression_eval(tree->right);
+        default:
+            return tree->value;
+    }
 }

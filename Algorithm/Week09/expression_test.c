@@ -13,17 +13,19 @@ int main(int argc, char** argv) {
     Node* mul = expression_construct_operator(OPERATOR_MUL, sub, node4);
     Node* add = expression_construct_operator(OPERATOR_ADD, node1, mul);
 
-    printf("Prefix notation : ");
+    printf("Prefix notation: ");
     expression_print_prefix(add);
     printf("\n");
 
-    printf("Infix notation : ");
+    printf("Infix notation: ");
     expression_print_infix(add);
     printf("\n");
 
-    printf("Postfix notation : ");
+    printf("Postfix notation: ");
     expression_print_postfix(add);
     printf("\n");
+
+    printf("Evaluated as: %d\n", expression_eval(add));
 
     expression_free(add);
 
