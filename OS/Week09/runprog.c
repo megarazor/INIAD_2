@@ -8,26 +8,14 @@
 
 int main(int argc, char* argv[]){
     // Input command & handling strings
-    char buf[BUF_SIZE];
-    char *save;
     char *cmd[ARG_SIZE];
     int i= 0;
 
-    for (int i= 0; i < argc; i++){
-        printf("%s ", argv[i]);
-    }
-    printf("\n");
     // Token handling
-    cmd= malloc(sizeof(char *) * argc);
     for (i= 0; i < argc - 1; i++){
-        strcpy(cmd[i], argv[i + 1]);
-        printf("%s\n", cmd[i]);
+        cmd[i]= argv[i + 1];
     }
-    [i]= NULL;
-    for (int j= 0; j < i + 1; j++){
-        printf("%s ", token[j]);
-    }    
-    printf("\n");
+    cmd[i]= NULL;
 
     // Handling parallel processes
     pid_t pid= fork();
