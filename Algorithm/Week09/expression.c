@@ -9,7 +9,7 @@
 Node* expression_construct_operator(NodeType type, Node* left, Node* right) {
     Node* node = (Node*)malloc(sizeof(Node));
 
-    node->type = type;
+    node->type = type;  
     node->value = 0;
 
     node->left = left;
@@ -125,16 +125,94 @@ Node* expression_parse_prefix(char *str) {
     }
 }
 
-#define TOKEN_SIZE 1024
-
-Node* expression_parse_infix(char *str) {
-    char *tokens[TOKEN_SIZE];
-    char *token= strtok(str, " \n");
-    int i= 0;
-    while(token != NULL){
-        tokens[i]= token;
+Node* expression_parse_infix(char *str){
+    char str_[1024];
+    int str__count= 0;
+    for (int i= 0; i < strlen(str); i++){ // Copy str to a new string str_
+        if (str[i] == '(' || str[i] == ')'){  // Make sure there are spaces between all the tokens. "((" is changed to "( ("
+            if (i > 0){
+                if (str[i - 1] == '(' || str[i - 1] == ')'){
+                    str_[str__count++]= ' ';
+                }
+            }
+        }
+        str_[str__count++]= str[i];
+    }
+    
+    for (int i= strlen(str_) - 1; i > 0; i--){ // Remove the last ')'
+        if (str_[i] == ')'){
+            str_[i]= ' ';
+            break;
+        }
     }
 
+    char *token= strtok(str_, " \n");
+    if (strcmp(token, "(") != 0){ // The expression is just a number, not a calculation
+        char *end;
+        int value = strtol(token, &end, 10);
+        return expression_construct_number(value);
+    }
+
+    // Split the expression into two parts: left side and right side of the operation sign
+    char op1[1024]= "\0";
+    char op2[1024]= "\0";
+    char op[3]= "";
+    int open_prth_count= 0, close_prth_count= 0;
+    
+    while(1){ // Left side
+        token= strtok(NULL, " \n");
+        if (strcmp(token, "+") == 0 || strcmp(token, "-") == 0 || strcmp(token, "*") == 0 || strcmp(token, "/") == 0){
+            if (open_prth_count == close_prth_count){ // If it's the operation sign in the middle of the expression
+                strcpy(op, token);
+                break;
+            }
+            else goto parse_next;
+        }
+        else{
+            parse_next:
+            strcat(op1, token);
+            strcat(op1, " ");
+            if (strcmp(token, "(") == 0){
+                open_prth_count++;
+            }
+            else if (strcmp(token, ")") == 0){
+                close_prth_count++;
+            }
+        }
+    }
+
+    while(1) { // Right side
+        token= strtok(NULL, " \n");
+        if (token != NULL){ 
+            strcat(op2, token);
+            strcat(op2, " ");
+        }
+        else{ // End of expression
+            // printf("op1: %s<end>\n", op1);
+            // printf("op: %s<end>\n", op);
+            // printf("op2: %s<end>\n\n", op2);
+            if(strcmp(op, "+") == 0) {
+                Node* op1_node = expression_parse_infix(op1);
+                Node* op2_node = expression_parse_infix(op2);
+                return expression_construct_operator(OPERATOR_ADD, op1_node, op2_node);
+            }
+            else if(strcmp(op, "-") == 0) {
+                Node* op1_node = expression_parse_infix(op1);
+                Node* op2_node = expression_parse_infix(op2);
+                return expression_construct_operator(OPERATOR_SUB, op1_node, op2_node);
+            }
+            else if(strcmp(op, "*") == 0) {
+                Node* op1_node = expression_parse_infix(op1);
+                Node* op2_node = expression_parse_infix(op2);
+                return expression_construct_operator(OPERATOR_MUL, op1_node, op2_node);
+            }
+            else {
+                Node* op1_node = expression_parse_infix(op1);
+                Node* op2_node = expression_parse_infix(op2);
+                return expression_construct_operator(OPERATOR_DIV, op1_node, op2_node);
+            }
+        }
+    }
 }
 
 Node* expression_parse_postfix(char *str) {
