@@ -132,10 +132,26 @@ int execinstr() // Execute an instruction
         regfile[rd] ^= regfile[rs];
         iname = "XOR";
         break;
+    case 0x80a0: // ADD3
+        regfile[rd]= regfile[rs] + (signed short) icode2; 
+        iname = "ADD3";
+        break;
+    case 0x80c0: // AND3
+        regfile[rd]= regfile[rs] & (unsigned short) icode2; 
+        iname = "AND3";
+        break;
+    case 0xb000: // BEQ
+        if (regfile[rd] == regfile[rs])
+            nextpc= pc + ((signed short) icode2 << 1);
+        iname = "BEQ";
+        break;
+    
+
     default:
         switch( icode1&0xff00 ) {
         case 0x7c00: // BC
             if( cbit == 1 )
+            // if ( C==1 ) PC = ( PC & 0xfffffffc ) + ( ( ( signed char ) pcdisp8 ) << 2 );
                 nextpc = pc+((char)(icode1&0x00ff)<<1);
             iname = "BC";
             break;
@@ -173,6 +189,22 @@ int execinstr() // Execute an instruction
                 nextpc = regfile[rs]&0xfffffffe;
                 iname = "JMP";
                 break;
+            case 0xb080: // BEQZ
+                if (regfile[rs] == 0)
+                    nextpc= pc + ((signed short)icode2 << 1);
+                iname = "BEQZ";
+                break;
+            case 0xb0b0: // BGEZ
+                if (regfile[rs] >= 0)
+                    nextpc= pc + ((signed short)icode2 << 1);
+                iname = "BGEZ";
+                break;
+            // case 0xb0b0: // BGTZ
+            //     if (regfile[rs] >= 0)
+            //         nextpc= pc + ((signed short)icode2 << 1);
+            //     iname = "BGEZ";
+            //     break;
+
             default:
                 if( (icode1&0xf000) == 0x4000 ) { // ADDI
                     regfile[rd] += (char)(icode1&0x00ff);
@@ -185,6 +217,8 @@ int execinstr() // Execute an instruction
                     iname = "LDI16";
                 } else if( (icode1&0xffff) == 0x7000 ) { // NOP
                     iname = "NOP";
+                // } else if( (icode1&0xffff) == 0x7000 ) { // BEQ
+                //     iname = "NOP";
                 } else {
                     printf("Unknown instruction: icode1 = %04x\n", icode1);
                     return -1;
