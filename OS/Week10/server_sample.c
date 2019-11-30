@@ -8,29 +8,25 @@
 
 void* client_thread(void* arg)
 {
+    char* html = "<html><head><title>Congratulations!</title></head><body><h1>Working as expected!</h1></body></html>";
+    char buf[1024];
     int clientfd = (int)(intptr_t)arg;
-    // printf("arg: %d\n", clientfd);
-
-    struct sockaddr_storage addr;
-    socklen_t addrlen= sizeof(addr);
-    if(getpeername(clientfd, (struct sockaddr*)&addr, &addrlen) != 0){
-        goto error;
-    }
-    char host[128], serv[128], out[1024];
     int len, i, wlen;
 
-    if(getnameinfo((struct sockaddr*)&addr, addrlen, host, sizeof(host), serv, sizeof(serv), 0) != 0){
-        goto error;
-    }
-    printf("Address: %s\nPort: %s\n", host, serv);
+    len = sprintf(buf, "HTTP/1.1 200 OK\r\n"
+                  "Content-Type: text/html\r\n"
+                  "Content-Length: %d\r\n"
+                  "Connection: close\r\n"
+                  "\r\n"
+                  "%s", (int)strlen(html), html);
 
-    len = sprintf(out, "Your address is %s at port %s\n", host, serv);
-    for (i = 0; i < 1024; ) {
-        wlen = write(clientfd, out + i, len - i);
+    /* Write whole len bytes of HTTP request */
+    for (i = 0; i < len; ) {
+        wlen = write(clientfd, buf + i, len - i);
         if (wlen < 0) goto error;
 
         i += wlen;
-    }   
+    }    
 
     close(clientfd);
     return NULL;
@@ -44,7 +40,7 @@ error:
 int main(int argc, char* argv[])
 {
     struct addrinfo hints, *res = NULL, *r;
-    const char* portname = "10001";
+    const char* portname = "8080";
     int sockfd, er;
 
     /* Resolve addresses */
@@ -89,13 +85,6 @@ int main(int argc, char* argv[])
         if (er < 0) goto error;
 
         clientfd = er;
-
-        // getpeername(clientfd, (struct sockaddr*)&addr, &addrlen);
-        // char host[1024], serv[1024];
-        // socklen_t hostlen= 1024, servlen= 1024;
-
-        // getnameinfo((struct sockaddr*)&addr, addrlen, host, sizeof(host), NULL, 0, 0);
-        // printf("%s\n", host);
 
         pthread_create(&thread, NULL, client_thread, (void*)(intptr_t)clientfd);
         pthread_detach(thread);
