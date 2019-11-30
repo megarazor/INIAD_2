@@ -340,7 +340,7 @@ int execinstr() // Execute an instruction
                 break;
             case 0xb0d0: // BGTZ
                 if ((signed) regfile[rs] > 0)
-                    nextpc= pc & 0xfffffffc + (((signed short)icode2 ) << 1);
+                    nextpc= (pc & 0xfffffffc) + (((signed short)icode2 ) << 1);
                 iname = "BGTZ";
                 break;
             case 0xb0c0: // BLEZ
@@ -385,16 +385,16 @@ int execinstr() // Execute an instruction
                 } else if( (icode1&0xf0ff) == 0xd0c0 ) { // SETH
                     regfile[rd] = ( signed short ) icode2 << 16 ;
                     iname = "SETH";
-                } else if( (icode1&0b1111'0000'1110'0000) == 0b0101'0000'0100'0000 ) { // SLLI
-                    int imm5= icode1 & 0b0000'0000'0001'1111;
+                } else if( (icode1&0b1111000011100000) == 0b0101000001000000 ) { // SLLI
+                    int imm5= icode1 & 0b0000000000011111;
                     regfile[rd] = regfile[rd] << imm5 ;
                     iname = "SLLI";
-                } else if( (icode1&0b1111'0000'1110'0000) == 0b0101'0000'0010'0000 ) { // SRAI
-                    int imm5= icode1 & 0b0000'0000'0001'1111;
+                } else if( (icode1&0b1111000011100000) == 0b0101000000100000 ) { // SRAI
+                    int imm5= icode1 & 0b0000000000011111;
                     regfile[rd] = ( signed ) regfile[rd] >> imm5 ;
                     iname = "SRAI";
-                } else if( (icode1&0b1111'0000'1110'0000) == 0b0101'0000'0000'0000 ) { // SRLI
-                    int imm5= icode1 & 0b0000'0000'0001'1111;
+                } else if( (icode1&0b1111000011100000) == 0b0101000000000000 ) { // SRLI
+                    int imm5= icode1 & 0b0000000000011111;
                     regfile[rd] = ( unsigned ) regfile[rd] >> ( imm5 & 31 ) ;
                     iname = "SRLI";
                 } else {
