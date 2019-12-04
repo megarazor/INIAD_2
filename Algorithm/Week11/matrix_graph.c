@@ -58,7 +58,7 @@ void graph_bfs(Graph* graph, int start, Visitfn f) {
     queue_enqueue(queue, start);
     for (int loop= 0;;loop++){
         int index= queue_dequeue(queue);
-        if (index == start){
+        if (index == 0){
             if (loop != 0) break;
         }
         f(graph->values[index]);
