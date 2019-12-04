@@ -27,9 +27,11 @@ void queue_enqueue(QUEUE queue, T value) {
     }
     queue->elements[queue->rear] = value;
     queue->rear = (queue->rear + 1) % QUEUE_SIZE;
+    // printf("Rear changed: %d\n", queue->rear);
 }
 
 T queue_dequeue(QUEUE queue) {
+    // printf("F: %d, R: %d\n", queue->front, queue->rear);
     if((queue == NULL) || (queue->front == queue->rear)) {
         return 0;
     }

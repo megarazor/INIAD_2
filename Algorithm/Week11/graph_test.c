@@ -1,8 +1,8 @@
 /* graph_test.c */
 
 #include <stdio.h>
-#include "list_graph.h"
-//#include "matrix_graph.h"
+// #include "list_graph.h"
+#include "matrix_graph.h"
 
 void print_node(NodeType value) {
     printf(" %d ", value);
