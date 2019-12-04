@@ -313,8 +313,10 @@ int execinstr() // Execute an instruction
             break;
         case 0xfe00: // BL24
             regfile[14] = ( pc & 0xfffffffc ) + 2; // Orginally: + 4
-            ltmp= (icode1 << 8) + (icode2) ; //  = pcdisp24
-            nextpc = ( pc & 0xfffffffc ) + ( sign_extend (ltmp) << 1 ); 
+            ltmp= ((icode1 & 0x00ff) << 16) + icode2; // pcdisp24
+            // printf("icode1: %x icode2: %x \nltmp: %x\n", icode1, icode2, ltmp); // Test printing
+            nextpc = ( pc & 0xfffffffc ) + ( sign_extend (ltmp) << 1 );   
+            // nextpc = ( pc & 0xfffffffc ) + (ltmp << 1 );             
             iname = "BL24";
             break;
         default:
