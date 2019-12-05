@@ -56,11 +56,8 @@ void graph_bfs(Graph* graph, int start, Visitfn f) {
     QUEUE queue = queue_construct();
     graph->visited[start]= 1;
     queue_enqueue(queue, start);
-    for (int loop= 0;;loop++){
+    while (!queue_empty(queue)){
         int index= queue_dequeue(queue);
-        if (index == 0){
-            if (loop != 0) break;
-        }
         f(graph->values[index]);
         for (int i= 0; i < SIZE; i++){
             if (graph->matrix[index][i] == 1){
