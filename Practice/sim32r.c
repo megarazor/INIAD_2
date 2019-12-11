@@ -7,7 +7,6 @@
 
 #define LINESIZE 256 // Max #characters of one line (#bytes)
 #define MEMSIZE 4096 // Memory size (#bytes)
-#define sign_extend(x) ( ( ( signed ) ( (x)<< 8 ) ) >>8 )
 
 unsigned char mem[MEMSIZE];
 int regfile[16];
@@ -52,10 +51,13 @@ int loaddata(char *fname)
     return 0;
 }
 
+#define get1bytes(a) (mem[a])
 #define get2bytes(a) ((mem[a]<<8)|mem[(a)+1])
 #define get4bytes(a) ((mem[a]<<24)|(mem[(a)+1]<<16)|(mem[(a)+2]<<8)|mem[(a)+3])
+#define put1bytes(a,d) (mem[a]=((d)&0xff))
 #define put2bytes(a,d) ((mem[a]=(((d)>>8)&0xff)), (mem[(a)+1]=((d)&0xff))) 
 #define put4bytes(a,d) ((mem[a]=(((d)>>24)&0xff)), (mem[(a)+1]=(((d)>>16)&0xff)), (mem[(a)+2]=(((d)>>8)&0xff)), (mem[(a)+3]=((d)&0xff))) 
+#define sign_extend(x) (((signed) ((x)<< 8)) >> 8)
 
 int execinstr() // Execute an instruction
 {
@@ -148,7 +150,7 @@ int execinstr() // Execute an instruction
         break;
     case 0xb010: // BNE
         if ( regfile[rs] != regfile[rd])
-            nextpc = ( pc & 0xfffffffc ) + ((( signed short ) icode2) << 1);
+            nextpc = ( pc  ) + ((( signed short ) icode2) << 1);
         iname = "BNE";
         break;
     case 0x0050: // CMPU
@@ -168,39 +170,49 @@ int execinstr() // Execute an instruction
         }
         break;
     case 0x20e0: // LDPI
-        regfile[rd] = *( int *) regfile[rs], regfile[rs] += 4;
+        addr = regfile[rs];
+        regfile[rd] = get4bytes(addr);
+        regfile[rs]+= 2;
         iname = "LDPI";
         break;
     case 0x2080: // LDB
-        regfile[rd] = *( signed char *) regfile[rs];
+        addr= regfile[rs];
+        regfile[rd]= (signed char) get1bytes(addr);
         iname = "LDB";
         break;
     case 0xa080: // LDBR
-        regfile[rd] = *( signed char *) ( regfile[rs] + ( signed short ) icode2 );
+        addr= regfile[rs] + (signed short) icode2;
+        regfile[rd]= (signed char) get1bytes(addr);
         iname = "LDBR";
         break;
     case 0x20a0: // LDH
-        regfile[rd] = *( signed short *) regfile[rs];
+        addr= regfile[rs];
+        regfile[rd]= (signed short)get2bytes(addr);
         iname = "LDH";
         break;
     case 0xa0a0: // LDHR
-        regfile[rd] = *( signed short *) ( regfile[rs] + ( signed short ) icode2 );
+        addr= regfile[rs] + (signed short)icode2;
+        regfile[rd]= (signed short)get2bytes(addr);
         iname = "LDHR";
         break;
     case 0x2090: // LDUB
-        regfile[rd] = *( unsigned char *) regfile[rs];
+        addr= regfile[rs];
+        regfile[rd]= (unsigned char) get1bytes(addr);
         iname = "LDUB";
         break;
     case 0xa090: // LDUBR
-        regfile[rd] = *( unsigned char *) ( regfile[rs] + ( signed short ) icode2 );
+        addr= regfile[rs] + (signed short) icode2;
+        regfile[rd]= (unsigned char) get1bytes(addr);
         iname = "LDUBR";
         break;
     case 0x20b0: // LDUH
-        regfile[rd] = *( unsigned short *) regfile[rs];
+        addr= regfile[rs];
+        regfile[rd]= (unsigned short)get2bytes(addr);
         iname = "LDUH";
         break;
     case 0xa0b0: // LDUHR
-        regfile[rd] = *( unsigned short *) ( regfile[rs] + ( signed short ) icode2 );
+        addr= regfile[rs] + (signed short)icode2;
+        regfile[rd]= (unsigned short)get2bytes(addr);
         iname = "LDUHR";
         break;
     case 0x0030: // NEG
@@ -248,28 +260,41 @@ int execinstr() // Execute an instruction
         iname = "SRL3";
         break;
     case 0x2060: // STPI
-        regfile[rs] += 2, * ( int *) regfile[rs] = regfile[rd]; // Originally += 4
+        regfile[rs]+= 2;
+        addr = regfile[rs];
+        data = regfile[rd];
+        put4bytes(addr,data);
         iname = "STPI";
         break;
     case 0x2070: // STPD
-        regfile[rs] -= 2, * ( int *) regfile[rs] = regfile[rd]; // Originally -= 4
+        regfile[rs]-= 2;
+        addr = regfile[rs];
+        data = regfile[rd];
+        put4bytes(addr,data);
         iname = "STPD";
         break;
     case 0x2000: // STB
-        * ( char *) regfile[rs] = regfile[rd];
+        addr = regfile[rs];
+        data = regfile[rd];
+        put1bytes(addr,data);
         iname = "STB";
         break;
     case 0xa000: // STBR
-        * ( char *) ( regfile[rs] + ( signed short ) icode2 ) = regfile[rd];
+        addr = regfile[rs] + (signed short) icode2;
+        data = regfile[rd];
+        put1bytes(addr,data);
         iname = "STBR";
         break;
-    /* One STH instruction in the mannual is missing */
     case 0x2020: // STH
-        * ( signed short *) regfile[rs] = regfile[rd];
+        addr = regfile[rs];
+        data = regfile[rd];
+        put2bytes(addr,data);
         iname = "STH";
         break;
     case 0xa020: // STHR
-        * ( signed short *) ( regfile[rs] + ( signed short ) icode2 ) = regfile[rd];
+        addr = regfile[rs] + (signed short)icode2;
+        data = regfile[rd];
+        put2bytes(addr,data);
         iname = "STHR";
         break;
     case 0x80d0: // XOR3
@@ -307,16 +332,14 @@ int execinstr() // Execute an instruction
             iname = "BRA24";
             break;
         case 0x7e00: // BL
-            regfile[14] = ( pc & 0xfffffffc ) + 2;  // Orginally: + 4
-            nextpc= ( pc & 0xfffffffc ) + ( ( ( signed char ) icode1 & 0x0000ffff ) << 1 );
+            regfile[14] = pc + 2;  // In the manual: + 4
+            nextpc= pc + ( ( ( signed char ) icode1 & 0x0000ffff ) << 1 );
             iname = "BL";
             break;
         case 0xfe00: // BL24
-            regfile[14] = ( pc & 0xfffffffc ) + 2; // Orginally: + 4
+            regfile[14] = pc  + 4; // In manual: + 4
             ltmp= ((icode1 & 0x00ff) << 16) + icode2; // pcdisp24
-            // printf("icode1: %x icode2: %x \nltmp: %x\n", icode1, icode2, ltmp); // Test printing
-            nextpc = ( pc & 0xfffffffc ) + ( sign_extend (ltmp) << 1 );   
-            // nextpc = ( pc & 0xfffffffc ) + (ltmp << 1 );             
+            nextpc = pc + ( sign_extend (ltmp) << 1 );        
             iname = "BL24";
             break;
         default:
@@ -332,32 +355,32 @@ int execinstr() // Execute an instruction
                 break;
             case 0xb080: // BEQZ
                 if (regfile[rs] == 0)
-                    nextpc= (pc & 0xfffffffc) + ((signed short)icode2 << 1);
+                    nextpc= (pc ) + ((signed short)icode2 << 1);
                 iname = "BEQZ";
                 break;
             case 0xb0b0: // BGEZ
                 if (regfile[rs] >= 0)
-                    nextpc= (pc & 0xfffffffc) + ((signed short)icode2 << 1);
+                    nextpc= (pc ) + ((signed short)icode2 << 1);
                 iname = "BGEZ";
                 break;
             case 0xb0d0: // BGTZ
                 if ((signed) regfile[rs] > 0)
-                    nextpc= (pc & 0xfffffffc) + (((signed short)icode2 ) << 1);
+                    nextpc= (pc ) + (((signed short)icode2 ) << 1);
                 iname = "BGTZ";
                 break;
             case 0xb0c0: // BLEZ
                 if ((signed) regfile[rs] <= 0)
-                    nextpc = (pc & 0xfffffffc) + (((signed short) icode2) << 1);
+                    nextpc = (pc ) + (((signed short) icode2) << 1);
                 iname = "BLEZ";
                 break;
             case 0xb0a0: // BLTZ
                 if ((signed) regfile[rs] < 0)
-                    nextpc = (pc & 0xfffffffc) + (((signed short) icode2) << 1);
+                    nextpc = (pc ) + (((signed short) icode2) << 1);
                 iname = "BLTZ";
                 break;
             case 0xb090: // BNEZ
                 if ( regfile[rs] != 0 )
-                    nextpc = ( pc & 0xfffffffc ) + ( ( ( signed short ) icode2 ) << 1);
+                    nextpc = ( pc  ) + ( ( ( signed short ) icode2 ) << 1);
                 iname = "BNEZ";
                 break;    
             case 0x8040: // CMPI

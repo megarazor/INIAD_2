@@ -1,0 +1,13 @@
+// Instruction simulator
+// 名前 (Name)： ファム・ヴァン・ナム (PHAM Van Nam)　学籍番号 (ID)：1F10180008
+
+	org(0);
+        LDI(R12,0);
+        LDI(R13,0);
+
+// No. 0x0001        
+// Test case: LD24
+        LDI16(R12,0x0001); // Set test no. to R12
+        LDI(R0,1);
+        LDI(R1,2);
+        LD24(R1,)
