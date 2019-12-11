@@ -79,7 +79,17 @@ int set_delete(SET set, char* str) {
 }
 
 int set_member(SET set, char* str) {
-
+    int h = hash(str);
+    
+    for(int i = 0; i < SIZE; i++) {
+        if(set->table[h] == NULL)
+            return 0;
+        if(set->table[h] != deleted) {
+            if(strcmp(set->table[h], str) == 0)
+                return 1;
+        }
+        h = hash_next(h);
+    }
     return 0;
 }
 

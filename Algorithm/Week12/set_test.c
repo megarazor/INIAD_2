@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "hashset_simple.h"
+#include "hashset_open_address.h"
 
 int main(int argc, char* argv[]) {
     SET set = set_construct();

@@ -87,7 +87,22 @@ int set_delete(SET set, char* str) {
 }
 
 int set_member(SET set, char* str) {
+    int h = hash(str);
+    if(set->table[h] == NULL) {
+        return 0;
+    }
 
+    hashset_node* node = set->table[h];
+    if(strcmp(node->value, str) == 0) {
+        return 1;
+    } else {
+        while(node->next != NULL) {
+            if(strcmp(node->value, str) == 0) {
+                return 1;
+            }
+            node = node->next;
+        }
+    }
     return 0;
 }
 

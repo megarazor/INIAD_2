@@ -60,6 +60,15 @@ int set_delete(SET set, char* str) {
 }
 
 int set_member(SET set, char* str) {
+    int h= hash(str);
 
+    if(set->table[h] == NULL) {
+        return 0;
+    }
+
+    if(strcmp(set->table[h], str) == 0) {
+        return 1;
+    }
+    
     return 0;
 }
