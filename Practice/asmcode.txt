@@ -8,6 +8,68 @@
 // No. 0x0001        
 // Test case: LD24
         LDI16(R12,0x0001); // Set test no. to R12
-        LDI(R0,1);
-        LDI(R1,2);
-        LD24(R1,)
+        LD24(R1,0x32);
+        LD24(R2,0x16);
+        CMP(R0,R1);
+        BNC24(L_NG);
+        CMP(R1,R0);
+        BC24(L_NG);
+        CMP(R1,R1);
+        BC24(L_NG);
+
+// No. 0x0002        
+// Test case: LD24
+        LDI16(R12,0x0002); // Set test no. to R12
+        LD24(R1,0x0);
+        LD24(R2,0x64);
+        CMP(R0,R1);
+        BNC24(L_NG);
+        CMP(R1,R0);
+        BC24(L_NG);
+        CMP(R1,R1);
+        BC24(L_NG);
+
+// No. 0x0003       
+// Test case: LD24
+        LDI16(R12,0x0003); // Set test no. to R12
+        LD24(R1,0x2);
+        LD24(R2,0x32);
+        CMP(R0,R1);
+        BNC24(L_NG);
+        CMP(R1,R0);
+        BC24(L_NG);
+        CMP(R1,R1);
+        BC24(L_NG);
+
+// No. 0x0004      
+// Test case: LD24
+        LDI16(R12,0x0004); // Set test no. to R12
+        LD24(R1,0x3);
+        LD24(R2,0x3);
+        CMP(R0,R1);
+        BNC24(L_NG);
+        CMP(R1,R0);
+        BC24(L_NG);
+        CMP(R1,R1);
+        BC24(L_NG);
+
+// No. 0x0005        
+// Test case: LD24
+        LDI16(R12,0x0005); // Set test no. to R12
+        LD24(R1,0x2);
+        LD24(R2,0x10);
+        CMP(R0,R1);
+        BNC24(L_NG);
+        CMP(R1,R0);
+        BC24(L_NG);
+        CMP(R1,R1);
+        BC24(L_NG);
+
+// Test end.
+        BC24(L_OK);
+    L_NG = addr;
+        LDI(R13,-1);
+        BRA(addr);
+    L_OK = addr;
+        LDI(R13,1);
+        BRA(addr);
