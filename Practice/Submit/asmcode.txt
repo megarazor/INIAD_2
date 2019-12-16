@@ -1,4 +1,4 @@
-// Instruction simulator
+// Assembler code
 // 名前 (Name)： ファム・ヴァン・ナム (PHAM Van Nam)　学籍番号 (ID)：1F10180008
 
 	org(0);
