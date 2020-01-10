@@ -42,8 +42,15 @@ int main(int argc, char* argv[]) {
                     printf("\"%d\" is not a member.\n", value);
                     }
                 break;
+            case 'p':
+                printf("___________________\n\n");
+                set_print2D(set);
+                printf("___________________\n\n");
+                break;
+            case 'f':
+                goto finish;
         }
     }
-
+finish:
     set_free(set);
 }

@@ -2,6 +2,7 @@
 
 typedef struct treeset_node{
     int value;
+    int height;
     struct treeset_node* left;
     struct treeset_node* right;
 } treeset_node;
@@ -15,6 +16,7 @@ typedef treeset* SET;
 SET set_construct();
 void set_free(SET set);
 
+void set_print2D(SET set);
 int set_insert(SET set, int value);
 int set_delete(SET set, int value);
 int set_member(SET set, int value);
